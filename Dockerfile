@@ -1,9 +1,9 @@
-FROM python:3.12-slim-bookworm AS build
+FROM python:3.15-slim-bookworm AS build
 WORKDIR /app
 COPY app/requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-FROM python:3.12-slim-bookworm
+FROM python:3.15-slim-bookworm
 RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin appuser
 WORKDIR /app
 COPY --from=build /install /usr/local
