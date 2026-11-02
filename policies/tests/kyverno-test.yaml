@@ -1,0 +1,19 @@
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: resource-limits
+policies:
+  - ../03-resource-limits.yaml
+resources:
+  - resources.yaml
+results:
+  - policy: require-cpu-memory-limits
+    isValidatingPolicy: true
+    kind: Pod
+    resources: [secure-app/bad-no-limits]
+    result: fail
+  - policy: require-cpu-memory-limits
+    isValidatingPolicy: true
+    kind: Pod
+    resources: [secure-app/good-limits]
+    result: pass

@@ -1,0 +1,11 @@
+.git
+.github
+terraform
+policies
+k8s
+secrets
+docs
+attacks
+*.md
+.env
+**/__pycache__

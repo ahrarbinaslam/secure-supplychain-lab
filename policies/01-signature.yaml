@@ -1,0 +1,30 @@
+apiVersion: policies.kyverno.io/v1
+kind: NamespacedImageValidatingPolicy
+metadata:
+  name: verify-build-signature
+  namespace: secure-app
+spec:
+  validationActions: [Audit]
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: ['v1']
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  matchImageReferences:
+    - glob: 'ghcr.io/ahrarbinaslam/secure-supplychain-lab/app*'
+  validationConfigurations:
+    required: true
+    verifyDigest: true
+  attestors:
+    - name: ci
+      cosign:
+        keyless:
+          identities:
+            - subject: 'https://github.com/ahrarbinaslam/secure-supplychain-lab/.github/workflows/pipeline.yml@refs/heads/main'
+              issuer: 'https://token.actions.githubusercontent.com'
+  validations:
+    - message: 'Image must have a trusted signature from the main CI workflow'
+      expression: >-
+        images.containers.map(image, verifyImageSignatures(image, [attestors.ci])).all(count, count > 0)

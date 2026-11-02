@@ -1,0 +1,11 @@
+.env
+*.dec.yaml
+.terraform/
+*.tfstate*
+*.tfvars
+!.gitkeep
+__pycache__/
+*.pyc
+sbom*.json
+results/
+*.log

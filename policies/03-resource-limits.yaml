@@ -1,0 +1,19 @@
+apiVersion: policies.kyverno.io/v1
+kind: NamespacedValidatingPolicy
+metadata:
+  name: require-cpu-memory-limits
+  namespace: secure-app
+spec:
+  validationActions: [Deny]
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: ['v1']
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  validations:
+    - message: 'Each container must declare CPU and memory limits'
+      expression: >-
+        object.spec.containers.all(c,
+          has(c.resources) && has(c.resources.limits) &&
+          has(c.resources.limits.cpu) && has(c.resources.limits.memory))

@@ -1,0 +1,17 @@
+apiVersion: policies.kyverno.io/v1
+kind: NamespacedValidatingPolicy
+metadata:
+  name: allow-only-pinned-ci-images
+  namespace: secure-app
+spec:
+  validationActions: [Deny]
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: ['v1']
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  validations:
+    - message: 'Only digest-pinned application images in our GHCR package are allowed'
+      expression: >-
+        object.spec.containers.all(c, c.image.startsWith('ghcr.io/ahrarbinaslam/secure-supplychain-lab/app@sha256:'))

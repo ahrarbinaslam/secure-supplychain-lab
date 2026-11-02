@@ -1,0 +1,14 @@
+driver:
+  kind: modern_ebpf
+falcosidekick:
+  enabled: true
+  webui:
+    enabled: true
+customRules:
+  custom-rules.yaml: |-
+    - rule: Package manager executed in a container
+      desc: Detects package manager execution inside running containers
+      condition: spawned_process and container and proc.name in (pip, pip3, apt, apt-get)
+      output: "Package manager executed (container=%container.name cmd=%proc.cmdline)"
+      priority: NOTICE
+      tags: [custom, drift]
