@@ -26,7 +26,7 @@ spec:
         seccompProfile: {type: RuntimeDefault}
       containers:
         - name: app
-          image: ghcr.io/ahrarbinaslam/secure-supplychain-lab/app@sha256:REPLACE_WITH_DIGEST
+          image: ghcr.io/ahrarbinaslam/secure-supplychain-lab/app@
           ports: [{containerPort: 8080}]
           securityContext:
             allowPrivilegeEscalation: false
