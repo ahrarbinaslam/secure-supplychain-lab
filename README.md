@@ -1,6 +1,6 @@
-# Secure software supply chain lab on Kali Linux
+# Secure software supply chain
 
-This repository is a lab starter for an 8-phase evidence-based DevSecOps project.
+This repository is a starter for a DevSecOps project.
 It deliberately does not contain any real secrets or built image digests.
 
 ## Steps and commands
