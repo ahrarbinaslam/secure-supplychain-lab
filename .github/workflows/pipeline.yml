@@ -31,7 +31,8 @@ jobs:
         uses: kyverno/action-install-cli@v0.2.0
         with:
           release: v1.19.2
-      - run: kyverno test policies/tests/
+      - name: Kyverno policy tests
+        run: kyverno test policies/tests/
   image:
     needs: checks
     runs-on: ubuntu-latest
@@ -45,6 +46,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build once, for both scan and publish
         run: docker build -t app:ci .
+      - name: Trivy evidence JSON
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: app:ci
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '0'
+          format: json
+          output: trivy-results.json
       - name: Trivy vulnerability gate
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -54,6 +65,13 @@ jobs:
           ignore-unfixed: true
           exit-code: '1'
           format: table
+      - name: Upload Trivy evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secure-release-trivy
+          path: trivy-results.json
+          if-no-files-found: ignore
       - name: Image name
         run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}/app" >> "$GITHUB_ENV"
       - name: Authenticate to GHCR
