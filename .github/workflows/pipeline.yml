@@ -67,7 +67,7 @@ jobs:
           format: table
       - name: Upload Trivy evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: secure-release-trivy
           path: trivy-results.json
